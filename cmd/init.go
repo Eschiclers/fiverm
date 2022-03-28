@@ -8,22 +8,29 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var Force bool
+
 // initCmd represents the init command
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "Create a fiverm.json file",
-	Long:  `Create a fiverm.json file`,
+	Short: "Create a resources.json file",
+	Long:  `Create a resources.json file`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if _, err := os.Stat(workingdirectory.GetWorkingDirectory() + string(os.PathSeparator) + "resources.json"); os.IsNotExist(err) {
+		_, err := os.Stat(workingdirectory.GetWorkingDirectory() + string(os.PathSeparator) + "resources.json")
+
+		if os.IsNotExist(err) || Force {
 			color.Green("Creating resources.json file")
 		} else {
-			color.Red("resource.json file already exists")
+			color.Red("The resource.json file already exists")
+			color.Yellow("Use -f to force overwriting")
+			os.Exit(1)
 		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(initCmd)
+	rootCmd.PersistentFlags().BoolVarP(&Force, "force", "f", false, "Force to overwrite existing file")
 
 	// Here you will define your flags and configuration settings.
 

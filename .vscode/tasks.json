@@ -12,7 +12,10 @@
     {
       "label": "Build project",
       "args": ["build", "-o", "build/"],
-      "group": "build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     },
     {
       "label": "Install dependencies",

@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"encoding/json"
+	"fmt"
 	"os"
 
 	"github.com/Eschiclers/fiverm/pkg/workingdirectory"
@@ -9,6 +11,22 @@ import (
 )
 
 var Force bool
+var ResourcesFile string
+var WorkingDirectory string
+
+type Resource struct {
+	Name    string `json:"name"`
+	Url     string `json:"url"`
+	Version string `json:"version"`
+	Folder  string `json:"folder"`
+}
+
+type Project struct {
+	Name      string     `json:"name"`
+	Author    string     `json:"author"`
+	Website   string     `json:"website"`
+	Resources []Resource `json:"resources"`
+}
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
@@ -16,13 +34,13 @@ var initCmd = &cobra.Command{
 	Short: "Create a resources.json file",
 	Long:  `Create a resources.json file`,
 	Run: func(cmd *cobra.Command, args []string) {
-		_, err := os.Stat(workingdirectory.GetWorkingDirectory() + string(os.PathSeparator) + "resources.json")
-
+		_, err := os.Stat(ResourcesFile)
 		if os.IsNotExist(err) || Force {
 			color.Green("Creating resources.json file")
+			CreateResourcesJson(ResourcesFile)
 		} else {
 			color.Red("The resource.json file already exists")
-			color.Yellow("Use -f to force overwriting")
+			color.Yellow("Use fiverm init -f to force overwriting")
 			os.Exit(1)
 		}
 	},
@@ -32,13 +50,42 @@ func init() {
 	rootCmd.AddCommand(initCmd)
 	rootCmd.PersistentFlags().BoolVarP(&Force, "force", "f", false, "Force to overwrite existing file")
 
-	// Here you will define your flags and configuration settings.
+	WorkingDirectory = workingdirectory.GetWorkingDirectory()
+	ResourcesFile = WorkingDirectory + string(os.PathSeparator) + "resources.json"
+}
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// initCmd.PersistentFlags().String("foo", "", "A help for foo")
+func CreateResourcesJson(file string) {
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// initCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	_file, err := os.Create(file)
+	if err != nil {
+		color.Red("Error creating file \n%s", err)
+		os.Exit(1)
+	}
+
+	var projectName, projectAuthor, projectWebsite string
+	fmt.Print("Name of the project/server: ")
+	fmt.Scanln(&projectName)
+	fmt.Print("Author of the project/server: ")
+	fmt.Scanln(&projectAuthor)
+	fmt.Print("Website of the project/server: ")
+	fmt.Scanln(&projectWebsite)
+
+	project := Project{
+		Name:      projectName,
+		Author:    projectAuthor,
+		Website:   projectWebsite,
+		Resources: []Resource{},
+	}
+	color.Green("Project registered")
+
+	// Struct to json idented
+	jsonData, err := json.MarshalIndent(project, "", "  ")
+	if err != nil {
+		color.Red("Error creating json file \n%s", err)
+		os.Exit(1)
+	}
+	_file.Write(jsonData)
+
+	defer _file.Close()
+	color.Green("Created file %s", file)
 }

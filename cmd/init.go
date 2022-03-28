@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/Eschiclers/fiverm/pkg/workingdirectory"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -15,9 +15,9 @@ var initCmd = &cobra.Command{
 	Long:  `Create a fiverm.json file`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if _, err := os.Stat(workingdirectory.GetWorkingDirectory() + string(os.PathSeparator) + "resources.json"); os.IsNotExist(err) {
-			fmt.Println("Creating resources.json file")
+			color.Green("Creating resources.json file")
 		} else {
-			fmt.Println("resource.json file already exists")
+			color.Red("resource.json file already exists")
 		}
 	},
 }

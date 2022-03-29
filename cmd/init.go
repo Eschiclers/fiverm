@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Eschiclers/fiverm/pkg/workingdirectory"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
@@ -50,7 +49,9 @@ func init() {
 	rootCmd.AddCommand(initCmd)
 	initCmd.Flags().BoolVarP(&Force, "force", "f", false, "Force overwriting of the resources.json file")
 
-	WorkingDirectory = workingdirectory.GetWorkingDirectory()
+	// Get the working directory
+	WorkingDirectory, _ = os.Getwd()
+
 	ResourcesFile = WorkingDirectory + string(os.PathSeparator) + "resources.json"
 }
 

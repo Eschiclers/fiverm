@@ -48,7 +48,7 @@ var initCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(initCmd)
-	rootCmd.PersistentFlags().BoolVarP(&Force, "force", "f", false, "Force to overwrite existing file")
+	initCmd.Flags().BoolVarP(&Force, "force", "f", false, "Force overwriting of the resources.json file")
 
 	WorkingDirectory = workingdirectory.GetWorkingDirectory()
 	ResourcesFile = WorkingDirectory + string(os.PathSeparator) + "resources.json"

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -16,18 +15,28 @@ import (
 var TemporalFolder string
 
 type Response struct {
+	Name       string
+	Version    string `json:"tag_name"`
 	ZipballUrl string `json:"zipball_url"`
 }
 
 var installCmd = &cobra.Command{
-	Use:   "install",
+	Use:   "install [resources]",
 	Short: "Install a resource",
 	Long:  `Install a resource`,
+	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+
 		_, err := os.Stat(ResourcesFile)
 		if os.IsNotExist(err) {
 			color.Red("The resources.json file does not exist")
 			color.Yellow("Use fiverm init to create it")
+			os.Exit(1)
+		}
+		_, err = os.Stat(WorkingDirectory + string(os.PathSeparator) + "resources")
+		if os.IsNotExist(err) {
+			color.Red("The resources folder does not exist")
+			color.Yellow("Make soure you are in the right directory")
 			os.Exit(1)
 		}
 
@@ -38,53 +47,53 @@ var installCmd = &cobra.Command{
 
 		// TODO: Add support for versions with @version | example: fivemtools/ft_ui@0.1 | example: fivemtools/ft_ui@latest
 		for i := 0; i < len(args); i++ {
-			/*
-				resource := strings.Split(args[i], "@")
-				var repository, version string
-				repository = resource[0]
-				if len(resource) > 1 {
-					version = resource[1]
-				} else {
-					version = "latest"
-				}
-
-				fmt.Println("Resource " + repository)
-				fmt.Println("Version " + version)
-			*/
+			var zipFile string
 
 			git_url := "https://api.github.com/repos/" + args[i] + "/releases/latest"
-			fmt.Println(git_url)
 			// do request and save json
 			resp, err := http.Get(git_url)
 			if err != nil {
-				fmt.Println(err)
+				color.Red("%s", err)
+				os.Exit(1)
+			}
+			if resp.StatusCode != 200 {
+				color.Red("Can not get the latest release of '" + args[i] + "'")
+				color.Red("Error: " + resp.Status)
 				os.Exit(1)
 			}
 
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
-				fmt.Println(err)
+				color.Red("%s", err)
 				os.Exit(1)
 			}
 			//Convert the body to type string
 			sb := string(body)
 
-			var response Response
-			err = json.Unmarshal([]byte(sb), &response)
+			var resource Resource
+			err = json.Unmarshal([]byte(sb), &resource)
 			if err != nil {
-				fmt.Println(err)
+				color.Red("%s", err)
 				os.Exit(1)
 			}
+			resource.Name = strings.Split(args[i], "/")[1]
+
+			// Found the resource
+			color.Green("Found the resource '" + args[i] + "' (version: " + resource.Version + ")")
+
+			color.Blue("Downloading the latest release")
 
 			// Download the file
-			err = DownloadFile(response.ZipballUrl, WorkingDirectory+string(os.PathSeparator)+"tmp"+string(os.PathSeparator)+strings.Split(args[i], "/")[1]+".zip")
+			zipFile = TemporalFolder + string(os.PathSeparator) + strings.Split(args[i], "/")[1] + ".zip"
+			err = DownloadFile(resource.ZipballUrl, zipFile)
 			if err != nil {
-				fmt.Println(err)
+				color.Red("%s", err)
 				os.Exit(1)
 			}
 
-			fmt.Println("Downloaded " + args[i] + ".zip")
+			color.Green("Downloaded '" + args[i] + "'")
 		}
+		defer os.RemoveAll(TemporalFolder)
 	},
 }
 
@@ -93,9 +102,15 @@ func init() {
 	installCmd.Flags().StringP("folder", "", "", "The folder to install the resource/s")
 	installCmd.Flags().BoolP("master", "m", false, "Install the resource/s from master branch")
 
-	TemporalFolder = WorkingDirectory + string(os.PathSeparator) + "tmp"
+	TemporalFolder = os.TempDir() + string(os.PathSeparator) + "fiverm"
 }
 
+/*
+  Download file from URL to destination path
+  @param url string
+  @param destination string
+  @return error
+*/
 func DownloadFile(url string, filepath string) error {
 	// Get the data
 	resp, err := http.Get(url)

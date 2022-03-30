@@ -14,10 +14,10 @@ var ResourcesFile string
 var WorkingDirectory string
 
 type Resource struct {
-	Name    string `json:"name"`
-	Url     string `json:"url"`
-	Version string `json:"version"`
-	Folder  string `json:"folder"`
+	Name       string
+	ZipballUrl string `json:"url"`
+	Version    string `json:"tag_name"`
+	Folder     string `json:"folder"`
 }
 
 type Project struct {

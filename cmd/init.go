@@ -15,7 +15,8 @@ var WorkingDirectory string
 
 type Resource struct {
 	Name       string
-	ZipballUrl string `json:"url"`
+	ZipballUrl string `json:"zipball_url"`
+	Url        string `json:"url"`
 	Version    string `json:"tag_name"`
 	Folder     string `json:"folder"`
 }

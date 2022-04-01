@@ -20,6 +20,7 @@ var TemporalFolder string
 
 type Response struct {
 	Name       string
+	User       string
 	Version    string `json:"tag_name"`
 	ZipballUrl string `json:"zipball_url"`
 }
@@ -130,10 +131,11 @@ var installCmd = &cobra.Command{
 
 			resource := Resource{
 				Name:       response.Name,
-				ZipballUrl: response.ZipballUrl,
-				Url:        "",
 				Version:    response.Version,
+				Author:     strings.Split(args[i], "/")[0],
+				Repository: "https://github.com/" + args[i],
 				Folder:     "/",
+				ZipballUrl: response.ZipballUrl,
 			}
 
 			// Add resource to ProjectFile

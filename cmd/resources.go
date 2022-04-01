@@ -4,10 +4,12 @@ var ResourcesFile string
 
 type Resource struct {
 	Name       string `json:"name"`
-	ZipballUrl string `json:"zipball_url"`
-	Url        string `json:"url"`
 	Version    string `json:"version"`
+	Author     string `json:"author"`
+	Repository string `json:"repository"`
+	Url        string `json:"url"`
 	Folder     string `json:"folder"`
+	ZipballUrl string `json:"zipball_url"`
 }
 
 type Resources struct {

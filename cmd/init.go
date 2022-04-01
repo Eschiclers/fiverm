@@ -10,23 +10,7 @@ import (
 )
 
 var Force bool
-var ResourcesFile string
 var WorkingDirectory string
-
-type Resource struct {
-	Name       string `json:"name"`
-	ZipballUrl string `json:"zipball_url"`
-	Url        string `json:"url"`
-	Version    string `json:"tag_name"`
-	Folder     string `json:"folder"`
-}
-
-type Resources struct {
-	Name      string     `json:"name"`
-	Author    string     `json:"author"`
-	Website   string     `json:"website"`
-	Resources []Resource `json:"resources"`
-}
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{

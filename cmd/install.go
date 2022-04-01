@@ -126,6 +126,15 @@ var installCmd = &cobra.Command{
 				color.Red("Error: %s", err)
 				os.Exit(1)
 			}
+
+			// Add resource to ProjectFile
+			color.Blue("Adding the resource to the resources.json file")
+			err = addResourceToProjectFile(resource)
+			if err != nil {
+				color.Red("Can not add the resource to the resources.json file")
+				color.Red("Error: %s", err)
+				os.Exit(1)
+			}
 		}
 		defer os.RemoveAll(TemporalFolder)
 	},
@@ -137,6 +146,44 @@ func init() {
 	installCmd.Flags().BoolP("master", "m", false, "Install the resource/s from master branch")
 
 	TemporalFolder = os.TempDir() + string(os.PathSeparator) + "fiverm" + string(os.PathSeparator)
+}
+
+func addResourceToProjectFile(resource Resource) error {
+	// Open the json file
+	jsonFile, err := os.Open(WorkingDirectory + string(os.PathSeparator) + "resources.json")
+	if err != nil {
+		return err
+	}
+	defer jsonFile.Close()
+
+	// Read the json file
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var resources Resources
+	json.Unmarshal(byteValue, &resources)
+
+	// Add the resource to the json file
+	resources.Resources = append(resources.Resources, resource)
+
+	// Convert the json to byte
+	/*jsonByte, err := json.Marshal(resources)
+	if err != nil {
+		return err
+	}*/
+
+	// Struct to json
+	jsonByte, err := json.MarshalIndent(resources, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	// Write the json file
+	err = ioutil.WriteFile(WorkingDirectory+string(os.PathSeparator)+"resources.json", jsonByte, 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 /*

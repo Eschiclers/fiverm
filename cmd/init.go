@@ -14,14 +14,14 @@ var ResourcesFile string
 var WorkingDirectory string
 
 type Resource struct {
-	Name       string
+	Name       string `json:"name"`
 	ZipballUrl string `json:"zipball_url"`
 	Url        string `json:"url"`
 	Version    string `json:"tag_name"`
 	Folder     string `json:"folder"`
 }
 
-type Project struct {
+type Resources struct {
 	Name      string     `json:"name"`
 	Author    string     `json:"author"`
 	Website   string     `json:"website"`
@@ -72,7 +72,7 @@ func CreateResourcesJson(file string) {
 	fmt.Print("Website of the project/server: ")
 	fmt.Scanln(&projectWebsite)
 
-	project := Project{
+	project := Resources{
 		Name:      projectName,
 		Author:    projectAuthor,
 		Website:   projectWebsite,

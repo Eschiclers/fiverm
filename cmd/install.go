@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
+	cp "github.com/otiai10/copy"
 	"github.com/spf13/cobra"
 )
 
@@ -107,6 +108,24 @@ var installCmd = &cobra.Command{
 				os.Exit(1)
 			}
 			color.Green("Unzipped '" + args[i] + "' " + parent)
+			tempResourceFolder := TemporalFolder + parent
+
+			_, errFx := os.Stat(tempResourceFolder + string(os.PathSeparator) + "fxmanifest.lua")
+			_, errRe := os.Stat(tempResourceFolder + string(os.PathSeparator) + "__resource.lua")
+			if os.IsNotExist(errFx) && os.IsNotExist(errRe) {
+				color.Red("The resource '" + args[i] + "' is not a valid resource")
+				color.Red("Make sure the resource has a __resource.lua and a fxmanifest.lua in the root folder")
+				os.Exit(1)
+			}
+
+			// Copy the resource to the resources folder
+			color.Blue("Copying the resource to the resources folder")
+			err = cp.Copy(tempResourceFolder, WorkingDirectory+string(os.PathSeparator)+"resources"+string(os.PathSeparator)+resource.Name)
+			if err != nil {
+				color.Red("Can not copy the resource to the resources folder")
+				color.Red("Error: %s", err)
+				os.Exit(1)
+			}
 		}
 		defer os.RemoveAll(TemporalFolder)
 	},

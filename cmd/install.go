@@ -76,21 +76,22 @@ var installCmd = &cobra.Command{
 			//Convert the body to type string
 			sb := string(body)
 
-			var resource Resource
-			err = json.Unmarshal([]byte(sb), &resource)
+			var response Response
+			err = json.Unmarshal([]byte(sb), &response)
 			if err != nil {
 				color.Red("%s", err)
 				os.Exit(1)
 			}
-			resource.Name = strings.Split(args[i], "/")[1]
+
+			response.Name = strings.Split(args[i], "/")[1]
 
 			// Found the resource
-			color.Green("Found the resource '" + args[i] + "' (version: " + resource.Version + ")")
+			color.Green("Found the resource '" + args[i] + "' (version: " + response.Version + ")")
 
 			color.Blue("Downloading the latest release")
 
 			// Download the zip file
-			err = downloadFile(resource.ZipballUrl, TemporalFolder+resource.Name+".zip")
+			err = downloadFile(response.ZipballUrl, TemporalFolder+response.Name+".zip")
 			if err != nil {
 				color.Red("Can not download the zip file")
 				color.Red("Error: %s", err)
@@ -101,7 +102,7 @@ var installCmd = &cobra.Command{
 			// Unzip the file in the temporal folder
 			color.Blue("Unzipping the zip file")
 			// parent is the folder name where the resource will be unzipped
-			parent, err := unzipSource(TemporalFolder+resource.Name+".zip", TemporalFolder+string(os.PathSeparator))
+			parent, err := unzipSource(TemporalFolder+response.Name+".zip", TemporalFolder+string(os.PathSeparator))
 			if err != nil {
 				color.Red("Can not unzip the zip file")
 				color.Red("Error: %s", err)
@@ -120,11 +121,19 @@ var installCmd = &cobra.Command{
 
 			// Copy the resource to the resources folder
 			color.Blue("Copying the resource to the resources folder")
-			err = cp.Copy(tempResourceFolder, WorkingDirectory+string(os.PathSeparator)+"resources"+string(os.PathSeparator)+resource.Name)
+			err = cp.Copy(tempResourceFolder, WorkingDirectory+string(os.PathSeparator)+"resources"+string(os.PathSeparator)+response.Name)
 			if err != nil {
 				color.Red("Can not copy the resource to the resources folder")
 				color.Red("Error: %s", err)
 				os.Exit(1)
+			}
+
+			resource := Resource{
+				Name:       response.Name,
+				ZipballUrl: response.ZipballUrl,
+				Url:        "",
+				Version:    response.Version,
+				Folder:     "/",
 			}
 
 			// Add resource to ProjectFile

@@ -16,8 +16,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var TemporalFolder string
-
 var customFolder string
 
 type Response struct {
@@ -163,8 +161,6 @@ func init() {
 	rootCmd.AddCommand(installCmd)
 	installCmd.Flags().StringVar(&customFolder, "folder", "", "The folder to install the resource/s")
 	installCmd.Flags().BoolP("master", "m", false, "Install the resource/s from master branch")
-
-	TemporalFolder = os.TempDir() + string(os.PathSeparator) + "fiverm" + string(os.PathSeparator)
 }
 
 func addResourceToProjectFile(resource Resource) error {

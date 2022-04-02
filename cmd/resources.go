@@ -1,7 +1,11 @@
 package cmd
 
+// Global variables
 var ResourcesFile string
+var WorkingDirectory string
+var TemporalFolder string
 
+// Structs
 type Resource struct {
 	Name       string `json:"name"`
 	Version    string `json:"version"`
@@ -18,3 +22,9 @@ type Resources struct {
 	Website   string     `json:"website"`
 	Resources []Resource `json:"resources"`
 }
+
+/*func LoadResources() (Resources, error) {
+  var resources Resources
+  err := ReadJsonFile(ResourcesFile, &resources)
+  return resources, err
+}*/

@@ -10,7 +10,6 @@ import (
 )
 
 var Force bool
-var WorkingDirectory string
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
@@ -33,11 +32,6 @@ var initCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(initCmd)
 	initCmd.Flags().BoolVarP(&Force, "force", "f", false, "Force overwriting of the resources.json file")
-
-	// Get the working directory
-	WorkingDirectory, _ = os.Getwd()
-
-	ResourcesFile = WorkingDirectory + string(os.PathSeparator) + "resources.json"
 }
 
 func CreateResourcesJson(file string) {

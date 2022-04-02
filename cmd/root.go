@@ -23,4 +23,8 @@ func Execute() {
 }
 
 func init() {
+	// Global variables
+	WorkingDirectory, _ = os.Getwd()
+	ResourcesFile = WorkingDirectory + string(os.PathSeparator) + "resources.json"
+	TemporalFolder = os.TempDir() + string(os.PathSeparator) + "fiverm" + string(os.PathSeparator)
 }

@@ -1,0 +1,34 @@
+name: Go build Windows
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build-windows:
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.17
+      
+    - name: Install dependencies
+      run: |
+       go version
+       go mod download
+    
+    - name: Run build
+      run: go build -o build/
+    
+    - name: Save artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: fiverm
+        path: build/
+      

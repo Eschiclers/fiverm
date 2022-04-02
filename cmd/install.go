@@ -18,6 +18,8 @@ import (
 
 var TemporalFolder string
 
+var customFolder string
+
 type Response struct {
 	Name       string
 	User       string
@@ -31,6 +33,12 @@ var installCmd = &cobra.Command{
 	Long:  `Install a resource from github repository`,
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		resourceFolder := WorkingDirectory + string(os.PathSeparator) + "resources" + string(os.PathSeparator) + string(os.PathSeparator)
+		var relativeFolder string
+		if customFolder != "" {
+			relativeFolder = "[" + strings.TrimSpace(customFolder) + "]"
+			resourceFolder = WorkingDirectory + string(os.PathSeparator) + "resources" + string(os.PathSeparator) + "[" + strings.TrimSpace(customFolder) + "]" + string(os.PathSeparator)
+		}
 
 		_, err := os.Stat(ResourcesFile)
 		if os.IsNotExist(err) {
@@ -122,7 +130,7 @@ var installCmd = &cobra.Command{
 
 			// Copy the resource to the resources folder
 			color.Blue("Copying the resource to the resources folder")
-			err = cp.Copy(tempResourceFolder, WorkingDirectory+string(os.PathSeparator)+"resources"+string(os.PathSeparator)+response.Name)
+			err = cp.Copy(tempResourceFolder, resourceFolder+response.Name) //WorkingDirectory+string(os.PathSeparator)+"resources"+string(os.PathSeparator)+response.Name)
 			if err != nil {
 				color.Red("Can not copy the resource to the resources folder")
 				color.Red("Error: %s", err)
@@ -134,7 +142,7 @@ var installCmd = &cobra.Command{
 				Version:    response.Version,
 				Author:     strings.Split(args[i], "/")[0],
 				Repository: "https://github.com/" + args[i],
-				Folder:     "/",
+				Folder:     relativeFolder,
 				ZipballUrl: response.ZipballUrl,
 			}
 
@@ -153,7 +161,7 @@ var installCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(installCmd)
-	installCmd.Flags().StringP("folder", "", "", "The folder to install the resource/s")
+	installCmd.Flags().StringVar(&customFolder, "folder", "", "The folder to install the resource/s")
 	installCmd.Flags().BoolP("master", "m", false, "Install the resource/s from master branch")
 
 	TemporalFolder = os.TempDir() + string(os.PathSeparator) + "fiverm" + string(os.PathSeparator)

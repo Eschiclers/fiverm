@@ -130,7 +130,7 @@ var installCmd = &cobra.Command{
 
 			// Copy the resource to the resources folder
 			color.Blue("Copying the resource to the resources folder")
-			err = cp.Copy(tempResourceFolder, resourceFolder+response.Name) //WorkingDirectory+string(os.PathSeparator)+"resources"+string(os.PathSeparator)+response.Name)
+			err = cp.Copy(tempResourceFolder, resourceFolder+response.Name)
 			if err != nil {
 				color.Red("Can not copy the resource to the resources folder")
 				color.Red("Error: %s", err)
@@ -183,12 +183,6 @@ func addResourceToProjectFile(resource Resource) error {
 
 	// Add the resource to the json file
 	resources.Resources = append(resources.Resources, resource)
-
-	// Convert the json to byte
-	/*jsonByte, err := json.Marshal(resources)
-	if err != nil {
-		return err
-	}*/
 
 	// Struct to json
 	jsonByte, err := json.MarshalIndent(resources, "", "  ")

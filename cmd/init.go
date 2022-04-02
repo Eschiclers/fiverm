@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
-	"fmt"
 	"os"
 
 	"github.com/fatih/color"
@@ -20,7 +18,7 @@ var initCmd = &cobra.Command{
 		_, err := os.Stat(ResourcesFile)
 		if os.IsNotExist(err) || Force {
 			color.Green("Creating resources.json file")
-			CreateResourcesJson(ResourcesFile)
+			CreateResourcesFile()
 		} else {
 			color.Red("The resource.json file already exists")
 			color.Yellow("Use fiverm init -f to force overwriting")
@@ -32,40 +30,4 @@ var initCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(initCmd)
 	initCmd.Flags().BoolVarP(&Force, "force", "f", false, "Force overwriting of the resources.json file")
-}
-
-func CreateResourcesJson(file string) {
-
-	_file, err := os.Create(file)
-	if err != nil {
-		color.Red("Error creating file \n%s", err)
-		os.Exit(1)
-	}
-
-	var projectName, projectAuthor, projectWebsite string
-	fmt.Print("Name of the project/server: ")
-	fmt.Scanln(&projectName)
-	fmt.Print("Author of the project/server: ")
-	fmt.Scanln(&projectAuthor)
-	fmt.Print("Website of the project/server: ")
-	fmt.Scanln(&projectWebsite)
-
-	project := Resources{
-		Name:      projectName,
-		Author:    projectAuthor,
-		Website:   projectWebsite,
-		Resources: []Resource{},
-	}
-	color.Green("Project registered")
-
-	// Struct to json idented
-	jsonData, err := json.MarshalIndent(project, "", "  ")
-	if err != nil {
-		color.Red("Error creating json file \n%s", err)
-		os.Exit(1)
-	}
-	_file.Write(jsonData)
-
-	defer _file.Close()
-	color.Green("Created file %s", file)
 }

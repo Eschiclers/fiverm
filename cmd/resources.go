@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
 
@@ -14,6 +15,7 @@ import (
 var ResourcesFile string
 var WorkingDirectory string
 var TemporalFolder string
+var Project Resources
 
 // Structs
 type Resource struct {
@@ -70,4 +72,24 @@ func CreateResourcesFile() {
 	defer _file.Close()
 
 	color.Green("Project created")
+}
+
+func LoadResourcesFile() {
+	if !ResourcesFileExists() {
+		color.Red("The resources.json file does not exist")
+		color.Yellow("Use fiverm init to create it")
+		os.Exit(1)
+	}
+	file, _ := ioutil.ReadFile(ResourcesFile)
+	json.Unmarshal(file, &Project)
+}
+
+func ResourcesFileExists() bool {
+	_, err := os.Stat(ResourcesFile)
+	return !os.IsNotExist(err)
+}
+
+func ResourcesFolderExists() bool {
+	_, err := os.Stat(WorkingDirectory + string(os.PathSeparator) + "resources")
+	return !os.IsNotExist(err)
 }

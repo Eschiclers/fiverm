@@ -5,8 +5,7 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -17,7 +16,8 @@ var removeCmd = &cobra.Command{
 	Long:    `Remove a resource`,
 	Aliases: []string{"rm", "delete", "del", "uninstall"},
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("remove called")
+		LoadResourcesFile()
+		color.Green(Project.Name)
 	},
 }
 

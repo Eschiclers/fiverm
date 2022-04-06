@@ -38,20 +38,17 @@ var installCmd = &cobra.Command{
 			resourceFolder = WorkingDirectory + string(os.PathSeparator) + "resources" + string(os.PathSeparator) + "[" + strings.TrimSpace(customFolder) + "]" + string(os.PathSeparator)
 		}
 
-		_, err := os.Stat(ResourcesFile)
-		if os.IsNotExist(err) {
-			color.Red("The resources.json file does not exist")
-			color.Yellow("Use fiverm init to create it")
-			os.Exit(1)
-		}
-		_, err = os.Stat(WorkingDirectory + string(os.PathSeparator) + "resources")
-		if os.IsNotExist(err) {
-			color.Red("The resources folder does not exist")
-			color.Yellow("Make soure you are in the right directory")
+		if !ResourcesFileExists() {
+			color.Red("The resources.json file does not exist. Please run 'init' command first.")
 			os.Exit(1)
 		}
 
-		_, err = os.Stat(TemporalFolder)
+		if !ResourcesFolderExists() {
+			color.Red("The resources folder does not exist. Please make sure you are in the right directory.")
+			os.Exit(1)
+		}
+
+		_, err := os.Stat(TemporalFolder)
 		if os.IsNotExist(err) {
 			os.Mkdir(TemporalFolder, 0755)
 		}

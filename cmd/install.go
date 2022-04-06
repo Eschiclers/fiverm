@@ -41,6 +41,8 @@ var installCmd = &cobra.Command{
 		if !ResourcesFileExists() {
 			color.Red("The resources.json file does not exist. Please run 'init' command first.")
 			os.Exit(1)
+		} else {
+			LoadResourcesFile()
 		}
 
 		if !ResourcesFolderExists() {
@@ -55,6 +57,13 @@ var installCmd = &cobra.Command{
 
 		// TODO: Add support for versions with @version | example: fivemtools/ft_ui@0.1 | example: fivemtools/ft_ui@latest
 		for i := 0; i < len(args); i++ {
+
+			// Check first if the resource is already installed
+			if ResourceInstalled(args[i]) {
+				color.Red("The resource " + args[i] + " is already installed.")
+				os.Exit(1)
+			}
+
 			git_url := "https://api.github.com/repos/" + args[i] + "/releases/latest"
 			// do request and save json
 			resp, err := http.Get(git_url)

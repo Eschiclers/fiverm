@@ -5,6 +5,8 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"os"
+
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +19,19 @@ var removeCmd = &cobra.Command{
 	Aliases: []string{"rm", "delete", "del", "uninstall"},
 	Run: func(cmd *cobra.Command, args []string) {
 		LoadResourcesFile()
-		color.Green(Project.Name)
+		if len(args) == 0 {
+			color.Red("Please specify a resource to remove.")
+			os.Exit(1)
+		}
+
+		for _, arg := range args {
+			if !ResourceInstalled(arg) {
+				color.Red("The resource '" + arg + "' does not exist.")
+				os.Exit(1)
+			} else {
+				RemoveResource(arg)
+			}
+		}
 	},
 }
 

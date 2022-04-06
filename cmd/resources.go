@@ -107,3 +107,18 @@ func ResourceInstalled(name string) bool {
 	}
 	return false
 }
+
+func RemoveResource(name string) {
+	// If the string contains a slash, get the last part of the string
+	if strings.Contains(name, "/") {
+		name = strings.Split(name, "/")[len(strings.Split(name, "/"))-1]
+	}
+
+	for _, resource := range Project.Resources {
+		if resource.Name == name {
+			//Project.Resources = append(Project.Resources[:i], Project.Resources[i+1:]...)
+			color.Green("Resource '%s' removed", name)
+			break
+		}
+	}
+}

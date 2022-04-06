@@ -32,6 +32,9 @@ var removeCmd = &cobra.Command{
 				RemoveResource(arg)
 			}
 		}
+
+		SaveResourcesFile()
+		color.Green("The resource(s) have been removed.")
 	},
 }
 

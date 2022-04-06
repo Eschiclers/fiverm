@@ -84,6 +84,23 @@ func LoadResourcesFile() {
 	json.Unmarshal(file, &Project)
 }
 
+func SaveResourcesFile() {
+	// Struct to json idented
+	jsonData, err := json.MarshalIndent(Project, "", "  ")
+	if err != nil {
+		color.Red("Error creating json file \n%s", err)
+		os.Exit(1)
+	}
+
+	_file, err := os.Create(ResourcesFile)
+	if err != nil {
+		color.Red("Error creating file \n%s", err)
+		os.Exit(1)
+	}
+	_file.Write(jsonData)
+	defer _file.Close()
+}
+
 func ResourcesFileExists() bool {
 	_, err := os.Stat(ResourcesFile)
 	return !os.IsNotExist(err)
@@ -114,10 +131,25 @@ func RemoveResource(name string) {
 		name = strings.Split(name, "/")[len(strings.Split(name, "/"))-1]
 	}
 
-	for _, resource := range Project.Resources {
+	for i, resource := range Project.Resources {
 		if resource.Name == name {
-			//Project.Resources = append(Project.Resources[:i], Project.Resources[i+1:]...)
-			color.Green("Resource '%s' removed", name)
+			color.Blue("Removing resource %s", resource.Name)
+			var resourceFolder string
+
+			if resource.Folder != "" {
+				resourceFolder = "[" + resource.Folder + "]" + string(os.PathSeparator) + resource.Name
+			} else {
+				resourceFolder = resource.Name
+			}
+
+			err := os.RemoveAll(WorkingDirectory + string(os.PathSeparator) + "resources" + string(os.PathSeparator) + resourceFolder)
+			if err != nil {
+				color.Red("Error removing resource %s", resource.Name)
+				color.Red(err.Error())
+				os.Exit(1)
+			}
+			Project.Resources = append(Project.Resources[:i], Project.Resources[i+1:]...)
+			color.Green("Resource %s removed", resource.Name)
 			break
 		}
 	}

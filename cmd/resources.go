@@ -93,3 +93,17 @@ func ResourcesFolderExists() bool {
 	_, err := os.Stat(WorkingDirectory + string(os.PathSeparator) + "resources")
 	return !os.IsNotExist(err)
 }
+
+func ResourceInstalled(name string) bool {
+	// If the string contains a slash, get the last part of the string
+	if strings.Contains(name, "/") {
+		name = strings.Split(name, "/")[len(strings.Split(name, "/"))-1]
+	}
+
+	for _, resource := range Project.Resources {
+		if resource.Name == name {
+			return true
+		}
+	}
+	return false
+}

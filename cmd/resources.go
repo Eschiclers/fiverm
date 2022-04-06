@@ -137,7 +137,7 @@ func RemoveResource(name string) {
 			var resourceFolder string
 
 			if resource.Folder != "" {
-				resourceFolder = "[" + resource.Folder + "]" + string(os.PathSeparator) + resource.Name
+				resourceFolder = resource.Folder + string(os.PathSeparator) + resource.Name
 			} else {
 				resourceFolder = resource.Name
 			}

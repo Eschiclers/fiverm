@@ -12,9 +12,10 @@ import (
 
 // removeCmd represents the remove command
 var removeCmd = &cobra.Command{
-	Use:   "remove [resource]",
-	Short: "Remove a resource",
-	Long:  `Remove a resource`,
+	Use:     "remove [resource]",
+	Short:   "Remove a resource",
+	Long:    `Remove a resource`,
+	Aliases: []string{"rm", "delete", "del", "uninstall"},
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("remove called")
 	},

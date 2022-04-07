@@ -24,7 +24,7 @@
 </div>
 
 <!-- BADGES -->
-<center>
+<div align="center">
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
@@ -32,7 +32,7 @@
 [![Issues][issues-shield]][issues-url]
 [![GPL 3.0][license-shield]][license-url]
 
-</center>
+</div>
 
 <!-- TABLE OF CONTENTS -->
 <details>

@@ -151,6 +151,11 @@ Don't forget to give the project a star! Thanks again!
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+## Support me
+You can support me and this project through ko-fi
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/chicle)
+
 <!-- LICENSE -->
 
 ## License

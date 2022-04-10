@@ -86,6 +86,29 @@ For now the only way to install fiverm is from the [actions page](https://github
 
 ## Usage
 
+### Creating a new project
+
+To create a project (resources.json file) you should run the next command in your server folder (along with the server.cfg file):
+
+```console
+user@host:~$ fiverm init
+```
+
+If you want to create the project again where one already exists, you can use the `--force` flag to overwrite the project. This will delete the project you have created in that folder, but WILL NOT DELETE ANY INSTALLED RESOURCES.
+
+```console
+user@host:~$ fiverm init --force
+```
+
+### Adding resources to the project
+
+You need to run the commands in the folder where the project is created with the `fiverm init` command
+
+To install resources in a created project, use the install command followed by the username and the repository name as in the example:
+
+```console
+user@host:~$ fiverm install eschiclers/zrp_demo
+```
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>

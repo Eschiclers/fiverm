@@ -110,6 +110,12 @@ To install resources in a created project, use the install command followed by t
 user@host:~$ fiverm install eschiclers/zrp_demo
 ```
 
+If you want the resource to be installed in a custom folder you can use the `--folder` flag and the folder name without `[ ]` as in the example:
+
+```console
+user@host:~$ fiverm install eschiclers/zrp_demo --folder zrp
+```
+And this will install the resource in the `[zrp]` folder.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

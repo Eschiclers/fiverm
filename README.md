@@ -136,6 +136,10 @@ And this will install the resource in the `[zrp]` folder.
 
 - [ ] Resource creation
 
+I also want to create a web page as a directory that collects the public resources and thus be able to list them all and create pages such as "the most installed resources".
+
+But for that you need to have servers. Which means spending money. That's why there is a section to support the project through ko-fi.
+
 See the [open issues](https://github.com/Eschiclers/fiverm/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>

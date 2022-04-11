@@ -16,8 +16,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var TemporalFolder string
-
 var customFolder string
 
 type Response struct {
@@ -40,26 +38,32 @@ var installCmd = &cobra.Command{
 			resourceFolder = WorkingDirectory + string(os.PathSeparator) + "resources" + string(os.PathSeparator) + "[" + strings.TrimSpace(customFolder) + "]" + string(os.PathSeparator)
 		}
 
-		_, err := os.Stat(ResourcesFile)
-		if os.IsNotExist(err) {
-			color.Red("The resources.json file does not exist")
-			color.Yellow("Use fiverm init to create it")
+		if !ResourcesFileExists() {
+			color.Red("The resources.json file does not exist. Please run 'init' command first.")
 			os.Exit(1)
+		} else {
+			LoadResourcesFile()
 		}
-		_, err = os.Stat(WorkingDirectory + string(os.PathSeparator) + "resources")
-		if os.IsNotExist(err) {
-			color.Red("The resources folder does not exist")
-			color.Yellow("Make soure you are in the right directory")
+
+		if !ResourcesFolderExists() {
+			color.Red("The resources folder does not exist. Please make sure you are in the right directory.")
 			os.Exit(1)
 		}
 
-		_, err = os.Stat(TemporalFolder)
+		_, err := os.Stat(TemporalFolder)
 		if os.IsNotExist(err) {
 			os.Mkdir(TemporalFolder, 0755)
 		}
 
 		// TODO: Add support for versions with @version | example: fivemtools/ft_ui@0.1 | example: fivemtools/ft_ui@latest
 		for i := 0; i < len(args); i++ {
+
+			// Check first if the resource is already installed
+			if ResourceInstalled(args[i]) {
+				color.Red("The resource " + args[i] + " is already installed.")
+				os.Exit(1)
+			}
+
 			git_url := "https://api.github.com/repos/" + args[i] + "/releases/latest"
 			// do request and save json
 			resp, err := http.Get(git_url)
@@ -163,8 +167,6 @@ func init() {
 	rootCmd.AddCommand(installCmd)
 	installCmd.Flags().StringVar(&customFolder, "folder", "", "The folder to install the resource/s")
 	installCmd.Flags().BoolP("master", "m", false, "Install the resource/s from master branch")
-
-	TemporalFolder = os.TempDir() + string(os.PathSeparator) + "fiverm" + string(os.PathSeparator)
 }
 
 func addResourceToProjectFile(resource Resource) error {

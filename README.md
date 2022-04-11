@@ -40,20 +40,29 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
+    <li>
+      <a href="#usage">Usage</a>
+      <ul>
+        <li><a href="#creating-a-new-project">Creating a new project</a></li>
+        <li><a href="#adding-resources-to-the-project">Adding resources to the project</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#roadmap">Roadmap</a>
+      <ul>
+        <li><a href="#for-server">For server</a></li>
+        <li><a href="#for-resource-creation">For resource creation</a></li>
+      </ul>
+    </li>
     <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#support-me">Support me</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
